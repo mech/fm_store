@@ -1,0 +1,119 @@
+== FmStore
+
+Based on Mongoid implementation, FmStore behaves in a way very similar to how
+you might expect ActiveRecord to behave. With callback and validation and ActiveModel
+adherence.
+
+== Database setup
+
+Place a fm_store.yml file inside the config directory.
+
+  development:
+    host: 127.0.0.1
+    account_name:
+    password:
+    ssl: false
+    log_actions: true
+  
+== Model setup
+
+You can setup a model using the following generator:
+  
+  rails generate fm_model <file_name> <layout_name> <database_name>
+
+This is using the Job example:
+
+  class Job
+    include FmStore::Layout
+  
+    set_layout "jobs"
+    set_database "jobs "
+  
+    field :modify_date, DateTime, :fm_name => "modify date"
+    field :company,     String
+    field :location,    String
+    field :jdid,        String
+    ... # more fields
+  
+    has_many :job_applications, :reference_key => "jdid"
+  
+    validates_presence_of :job_title
+  
+    # put your class methods here
+    class << self
+      def published
+        where("status" => "open")
+      end
+    end
+  end
+
+== Finders
+
+All finder methods such as +where+, +limit+, +order+, +in+ return a criteria object
+which contain the params and options. No database call will be made until a kicker
+method has been called such as +each+, +first+, etc.
+
+  # Find single job with ID. There is no #find method. Not to be confused with
+  # the instance method Job#id like @job.id which return you "JDID1" for example.
+  @job = Job.id("JDID1")
+
+  # Find 10 records
+  @jobs = Job.limit(10)
+
+  # Find 10 records sorted
+  @jobs = Job.limit(10).order("status")
+
+  # Find based on condition (single value per field). Please use the field name
+  # rather than the FileMaker field name like "modify date"
+  @jobs = Job.where("status" => "open")
+  @jobs = Job.where("category" => "Account", "status" => "open")
+
+  # Find with operator
+  @jobs = Job.where("salary.gt" => 2500)
+
+  # Find all payroll details whose gross salary is between $1.00 to $10.00 in order
+  PayrollDetail.where("gross_salary.bw" => "1...10").order("gross salary")
+  
+  # Sorting. By default is ASC
+  @jobs = Job.order("status") # same as Job.order("status asc")
+  
+  # Excluding
+  @jobs = Job.where("status.neq" => "open")
+  @jobs = Job.exclude("status" => "open") # this is preferred
+  
+  # Logical OR
+  # By default, conditions are ANDed together. Pass in false to make it ORed together
+  # Remember to supply curly braces for the first parameter which is a hash
+  @jobs = Job.where({"status" => "open", :category => "Account"}, false)
+  
+  # Total count
+  @total = Job.where("status" => "closed").total
+  
+  # Find based on multiple values in a single field
+  @jobs = Job.in(:status => ["pending", "closed"])
+  @jobs = Job.in(:status => ["pending", "closed"]).order("status").limit(10)
+  
+== Pagination
+
+Paging is supported via WillPaginate rails3 branch. Any +limit+ criteria will be
+ignore when you call +paginate+.
+
+  @jobs = Job.where("status" => "open").paginate
+
++paginate+ is a kicker method in itself so database connection will be made and
+result being retrieved.
+  
+== Available operators
+
+* eq    =word
+* cn    *word*
+* bw    word*
+* ew    *word
+* gt    > word
+* gte   >= word
+* lt    < word
+* lte   <= word
+* neq   omit,word
+
+
+

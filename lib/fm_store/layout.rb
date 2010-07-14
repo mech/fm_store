@@ -1,0 +1,110 @@
+# encoding: utf-8
+module FmStore
+  module Layout
+    extend ActiveSupport::Concern
+    
+    included do
+      include FmStore::Components
+      
+      cattr_accessor :layout, :database
+      
+      attr_reader :new_record, :record_id, :mod_id
+      
+      define_model_callbacks :create, :save, :update, :validation, :destroy
+    end
+    
+    module ClassMethods
+      def set_layout(layout)
+        self.layout = layout
+      end
+      
+      def set_database(database)
+        self.database = database
+      end
+      
+      # Calling self.fields will ideally match here
+      # See FieldControl
+      def fm_fields
+        conn = Connection.establish_connection(self)
+        rs = conn.any.first.keys.inspect
+      end
+      
+      # Return the real FileMaker, nil otherwise
+      def find_fm_name(attribute_name)
+        if fields.has_key?(attribute_name)
+          return attribute_name
+        else
+          f = fields.find { |a| a.last.name == attribute_name }
+
+          f.last.fm_name if f
+        end
+      end
+      
+      # Drop-down, for example
+      # http://host/fmi/xml/FMPXMLLAYOUT.xml?-db=jobs+&-lay=jobs&-view=
+      def value_lists
+        conn = Connection.establish_connection(self)
+        conn.value_lists
+      end
+    end
+    
+    def initialize(attributes = {})
+      @new_record = true
+      process(attributes)
+    end
+    
+    def fm_attributes
+      attrs = {}
+      
+      fields.each do |fm_attr, field|
+        ivar = send("#{field.name}")
+        
+        case ivar
+        when Date
+          ivar = ivar.strftime("%m/%d/%Y")
+        when Fixnum
+          ivar = BigDecimal.new(ivar.to_s)
+        when DateTime
+          ivar = ivar.strftime("%m/%d/%Y %H:%M:%S")
+        end
+        
+        attrs[fm_attr] = ivar if ivar # ignore nil attributes
+      end
+      
+      attrs
+    end
+    
+    def id
+      @record_id
+    end
+    
+    def new_record?
+      @new_record
+    end
+    
+    def to_param
+      @record_id.to_s if @record_id
+    end
+    
+    # Require by ActiveModel
+    def to_model
+      self
+    end
+    
+    def to_key
+      @record_id if @record_id
+    end
+    
+    def persisted?
+      !new_record?
+    end
+    
+    protected
+    
+    def process(attributes)
+      attributes.each do |k, v|
+        send("#{k}=", v) if respond_to?(k)
+      end
+    end
+  end
+end
