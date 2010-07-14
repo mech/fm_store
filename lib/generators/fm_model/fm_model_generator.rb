@@ -17,7 +17,7 @@ class FmModelGenerator < Rails::Generators::NamedBase
     
     conn = server[database_name][layout_name]
     
-    @fields = conn.any.first.keys.map { |k| k.parameterize.underscore.to_s }
+    @fields = conn.any.first.keys
     
     template 'model.rb', File.join('app/models', class_path, "#{file_name}.rb")
   end
