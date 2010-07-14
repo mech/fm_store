@@ -27,5 +27,9 @@ module FmStore
     # def find(hash_or_record_id, options = {})
     #   where(hash_or_record_id, options)
     # end
+    
+    def total
+      criteria.paginate(:per_page => 1).total_entries
+    end
   end
 end
