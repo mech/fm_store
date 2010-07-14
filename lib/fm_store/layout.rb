@@ -40,6 +40,10 @@ module FmStore
         end
       end
       
+      def searchable_fields
+        fields.map(&:last).select(&:searchable).map(&:name)
+      end
+      
       # Drop-down, for example
       # http://host/fmi/xml/FMPXMLLAYOUT.xml?-db=jobs+&-lay=jobs&-view=
       def value_lists
