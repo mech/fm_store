@@ -36,7 +36,7 @@ module FmStore
         current_page = params[:page] || 1
         
         if @params.size.zero?
-          if params[:q]
+          if params[:q].present?
             query = params[:q]
 
             p = klass.searchable_fields.inject({}) { |h, name| h[name] = query; h }
@@ -48,7 +48,7 @@ module FmStore
           # we have constraint
           c = @params
           
-          if params[:q]
+          if params[:q].present?
             query = params[:q]
             
             p = klass.searchable_fields.inject({}) { |h, name| h[name] = query; h }
