@@ -105,6 +105,8 @@ field option, this +search+ method will know which fields to search for.
   # Search for it in your controller
   @company = Company.search(params)
   
+  @company = Company.where(:category => "REGULAR").search(params)
+  
 == Pagination
 
 Paging is supported via WillPaginate rails3 branch. Any +limit+ criteria will be

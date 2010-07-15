@@ -44,7 +44,8 @@ module FmStore
     include Criterion::Optional
     include Enumerable
     
-    attr_reader :klass, :params, :options, :find_query
+    attr_reader :klass, :params, :options
+    attr_accessor :find_query
     
     delegate :paginate, :to => :reader
     
