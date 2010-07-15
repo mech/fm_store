@@ -28,8 +28,6 @@ module FmStore
         
         accepted_params["-lop"] = "or" unless logical_and
         
-        puts "Include these: #{accepted_params.inspect}"
-        
         update_params(accepted_params)
         self
       end
@@ -63,10 +61,8 @@ module FmStore
               accepted_params[fm_name] = value if fm_name
             end
             
-            
             self.find_query = true
             final = assemble_constraint_query(c, accepted_params)
-            puts final.inspect
             update_params(final)
             paginate(:page => current_page)
           else
