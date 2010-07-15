@@ -3,7 +3,7 @@ module FmStore
   module Finders
     
     # Criteria
-    [:where, :limit, :skip, :order, :exclude, :exclude_in, :in].each do |name|
+    [:where, :limit, :skip, :order, :exclude, :exclude_in, :in, :search].each do |name|
       define_method(name) do |*args|
         criteria.send(name, *args)
       end
@@ -31,5 +31,6 @@ module FmStore
     def total
       criteria.paginate(:per_page => 1).total_entries
     end
+    
   end
 end

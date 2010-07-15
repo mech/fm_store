@@ -15,11 +15,14 @@ module FmStore
           
           if with_operator.size == 2
             fm_name = klass.find_fm_name(with_operator.first)
-            accepted_params[fm_name] = value
-            accepted_params["#{fm_name}.op"] = with_operator.last
+            
+            if fm_name
+              accepted_params[fm_name] = value
+              accepted_params["#{fm_name}.op"] = with_operator.last
+            end
           else
             fm_name = klass.find_fm_name(field)
-            accepted_params[fm_name] = value
+            accepted_params[fm_name] = value if fm_name
           end
         end
         
@@ -29,6 +32,19 @@ module FmStore
         
         update_params(accepted_params)
         self
+      end
+      
+      def search(params)
+        current_page = params[:page] || 1
+
+        if params[:q]
+          query = params[:q]
+
+          p = klass.searchable_fields.inject({}) { |h, name| h[name] = query; h }
+          where(p, false).paginate(:page => current_page)
+        else
+          where.paginate(:page => current_page)
+        end
       end
       
       def id(record_id)
@@ -47,7 +63,7 @@ module FmStore
           field = field.to_s
           
           fm_name = klass.find_fm_name(field)
-          accepted_params[fm_name] = value
+          accepted_params[fm_name] = value if fm_name
         end
         
         update_params(assemble_query(accepted_params))

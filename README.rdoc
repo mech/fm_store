@@ -88,17 +88,29 @@ method has been called such as +each+, +first+, etc.
   
   # Total count
   @total = Job.where("status" => "closed").total
+  @total = Job.total
   
   # Find based on multiple values in a single field
   @jobs = Job.in(:status => ["pending", "closed"])
   @jobs = Job.in(:status => ["pending", "closed"]).order("status").limit(10)
+  
+== Search
+
+Every model will be exposed the +search+ class method. Based on the +:searchable+
+field option, this +search+ method will know which fields to search for.
+  
+  # In your model
+  field :name, String, :fm_name => "company", :searchable => true
+  
+  # Search for it in your controller
+  @company = Company.search(params)
   
 == Pagination
 
 Paging is supported via WillPaginate rails3 branch. Any +limit+ criteria will be
 ignore when you call +paginate+.
 
-  @jobs = Job.where("status" => "open").paginate
+  @jobs = Job.where("status" => "open").paginate(:page => params[:page])
 
 +paginate+ is a kicker method in itself so database connection will be made and
 result being retrieved.
