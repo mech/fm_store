@@ -11,8 +11,6 @@ module FmStore
           accepted_params[fm_name] = value
         end
         
-        puts "Exclude these: #{accepted_params.inspect}"
-        
         update_params(accepted_params)
         self
       end

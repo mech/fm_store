@@ -15,10 +15,7 @@ module FmStore
       protected
       
       def build_parent
-        conn = Connection.establish_connection(@klass)
-        rs = conn.find({@reference_key => "=#{@layout.send(@reference_key.to_sym)}"})
-        
-        @target = FmStore::Builders::Single.build(rs, @klass)
+        @target = @klass.where({@reference_key => "=#{@layout.send(@reference_key.to_sym)}"}).limit(1).first
       end
       
     end
