@@ -57,6 +57,7 @@ module FmStore
     end
     
     def initialize(attributes = {})
+      @associations = {}
       @new_record = true
       process(attributes)
     end
@@ -83,7 +84,7 @@ module FmStore
     end
     
     def reload
-      @_type = nil
+      @associations = {}
       self.class.id(@record_id)
     end
     
