@@ -50,6 +50,10 @@ module FmStore
         conn = Connection.establish_connection(self)
         conn.value_lists
       end
+      
+      def first
+        limit(1).first
+      end
     end
     
     def initialize(attributes = {})
@@ -76,6 +80,11 @@ module FmStore
       end
       
       attrs
+    end
+    
+    def reload
+      @_type = nil
+      self.class.id(@record_id)
     end
     
     def id

@@ -22,7 +22,7 @@ module FmStore
       def associate(type, options)
         name = options.name.to_s
         
-        define_method(name) { type.new(self, options) }
+        define_method(name) { @_type ||= type.new(self, options) }
         define_method("#{name}=") do |object|
           type.update(object, self, options)
         end
