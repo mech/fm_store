@@ -10,7 +10,7 @@ module FmStore
     
     module ClassMethods
       def has_many(name, options = {})
-        associate(Associations::HasMany, optionize(name, options))
+        associate(Associations::HasMany, optionize(name, options), false)
       end
       
       def belongs_to(name, options= {})
@@ -19,10 +19,18 @@ module FmStore
       
       protected
       
-      def associate(type, options)
+      def associate(type, options, cached = true)
         name = options.name.to_s
         
-        define_method(name) { @associations[name] ||= type.new(self, options) }
+        define_method(name) do
+          if cached
+            @associations[name] ||= type.new(self, options)
+          else
+            # do not cached those that returns criteria
+            type.new(self, options)
+          end
+        end
+        
         define_method("#{name}=") do |object|
           type.update(object, self, options)
         end
