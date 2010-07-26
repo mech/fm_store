@@ -69,6 +69,10 @@ module FmStore
       paginate.total_entries
     end
     
+    def all
+      reader.execute
+    end
+    
     protected
     
     def update_params(params)
