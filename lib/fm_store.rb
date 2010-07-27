@@ -3,7 +3,7 @@
 #
 require 'rubygems'
 
-gem "activemodel", "~>3.0.0.beta"
+gem "activemodel", "~>3.0.0.rc"
 gem "will_paginate", "~>3.0.pre"
 
 require "singleton"
