@@ -66,7 +66,7 @@ module FmStore
     end
     
     def total
-      paginate.total_entries
+      paginate(:per_page => 1).total_entries
     end
     
     def all
