@@ -66,7 +66,11 @@ module FmStore
     end
     
     def total
-      paginate(:per_page => 1).total_entries
+      original_max_record = options[:max_records]
+      count = paginate(:per_page => 1).total_entries
+      limit(original_max_record)
+      
+      return count
     end
     
     def all
