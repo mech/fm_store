@@ -6,6 +6,8 @@ module FmStore
         accepted_params = {}
         
         params.each do |field, value|
+          field = field.to_s
+          
           fm_name = klass.find_fm_name(field)
           accepted_params["#{fm_name}.op"] = "neq"
           accepted_params[fm_name] = value
