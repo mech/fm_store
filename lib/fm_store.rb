@@ -9,6 +9,7 @@ gem "will_paginate", "~>3.0.pre"
 require "singleton"
 require 'yaml'
 require 'rfm'
+require 'fm_store/ext/field'
 require 'active_support'
 require 'active_support/core_ext'
 require 'active_model'
@@ -26,8 +27,6 @@ require 'fm_store/fields'
 require 'fm_store/finders'
 require 'fm_store/criteria'
 require 'fm_store/layout'
-
-require 'fm_store/ext/field'
 
 if defined?(Rails)
   require 'fm_store/railtie'
