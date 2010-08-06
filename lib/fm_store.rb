@@ -9,6 +9,7 @@ gem "will_paginate", "~>3.0.pre"
 require "singleton"
 require 'yaml'
 require 'rfm'
+require 'rfm/metadata/field'
 require 'fm_store/ext/field'
 require 'active_support'
 require 'active_support/core_ext'
