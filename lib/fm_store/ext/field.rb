@@ -6,7 +6,7 @@ module Rfm
       end
       
       def coerce(value, resultset)
-        return nil if value.empty?
+        return nil if (value.nil? || value.empty?)
         
         begin
           case self.result
