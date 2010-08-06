@@ -27,6 +27,8 @@ require 'fm_store/finders'
 require 'fm_store/criteria'
 require 'fm_store/layout'
 
+require 'fm_store/ext/field'
+
 if defined?(Rails)
   require 'fm_store/railtie'
 end
