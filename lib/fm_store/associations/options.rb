@@ -21,6 +21,10 @@ module FmStore
       def name
         @attributes[:name].to_s
       end
+      
+      def format_with
+        @attributes[:format_with]
+      end
     end
   end
 end

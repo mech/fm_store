@@ -9,6 +9,7 @@ module FmStore
       def initialize(layout, options)
         @layout, @association_name = layout, options.name
         @klass, @reference_key, @options = options.klass, options.reference_key, options
+        @format_with = options.format_with
         
         build_children
       end
@@ -18,7 +19,11 @@ module FmStore
       def build_children
         # Returns a criteria rather then grabbing the records, so we do not
         # waste request trip
-        @target = @klass.where({@reference_key => "=#{@layout.send(@reference_key.to_sym)}"})
+        if @format_with
+          @target = @klass.where({@reference_key => "=#{@layout.send(@format_with.to_sym)}"})
+        else
+          @target = @klass.where({@reference_key => "=#{@layout.send(@reference_key.to_sym)}"})
+        end
       end
       
     end
