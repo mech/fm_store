@@ -22,14 +22,6 @@ module FmStore
         self.database = database
       end
       
-      def connect(action, args, options = {})
-        config = FmStore::Config.instance
-        server = FmStore::Connection.server(self)
-        params = {"-db" => self.database, "-lay" => self.layout}
-        xml_response = server.connect(config.account_name, config.password, action, params.merge(args), options).body
-        Rfm::Resultset.new(server, xml_response, server[self.database][self.layout])
-      end
-      
       # Calling self.fields will ideally match here
       # See FieldControl
       def fm_fields
