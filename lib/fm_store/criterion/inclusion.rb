@@ -95,7 +95,7 @@ module FmStore
       end
       
       def custom_query(params = {})
-        update_params(assemble_query(accepted_params))
+        update_params(params)
         self
       end
       
