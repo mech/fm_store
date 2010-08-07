@@ -94,6 +94,11 @@ module FmStore
         self
       end
       
+      def custom_query(params = {})
+        update_params(assemble_query(accepted_params))
+        self
+      end
+      
       protected
       
       # This will build constraint AND and OR query
