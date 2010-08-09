@@ -72,7 +72,7 @@ module FmStore
       end
       
       def id(record_id)
-        update_params("-recid" => record_id)
+        update_params(klass.identity => record_id)
         self.first
       end
       

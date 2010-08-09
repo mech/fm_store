@@ -44,6 +44,10 @@ module FmStore
         fields.map(&:last).select(&:searchable).map(&:name)
       end
       
+      def identity
+        fields.map(&:last).find(&:identity).try(:name) || "-recid"
+      end
+      
       # Drop-down, for example
       # http://host/fmi/xml/FMPXMLLAYOUT.xml?-db=jobs+&-lay=jobs&-view=
       def value_lists
@@ -85,11 +89,11 @@ module FmStore
     
     def reload
       @associations = {}
-      self.class.id(@record_id)
+      self.class.id(id)
     end
     
     def id
-      @record_id
+      self.class.identity == "-recid" ? @record_id : send(self.class.identity.to_sym)
     end
     
     def new_record?
@@ -97,7 +101,7 @@ module FmStore
     end
     
     def to_param
-      @record_id.to_s if @record_id
+      id.to_s if id
     end
     
     # Require by ActiveModel
@@ -106,7 +110,7 @@ module FmStore
     end
     
     def to_key
-      @record_id if @record_id
+      id if id
     end
     
     def persisted?
