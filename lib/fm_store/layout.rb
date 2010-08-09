@@ -93,7 +93,7 @@ module FmStore
     end
     
     def id
-      self.class.identity == "-recid" ? @record_id : send(self.class.identity.to_sym)
+      self.class.identity == "-recid" ? @record_id : send(self.class.fields[self.class.identity].name)
     end
     
     def new_record?
