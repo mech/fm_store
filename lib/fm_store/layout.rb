@@ -45,7 +45,7 @@ module FmStore
       end
       
       def identity
-        fields.map(&:last).find(&:identity).try(:name) || "-recid"
+        fields.map(&:last).find(&:identity).try(:fm_name) || "-recid"
       end
       
       # Drop-down, for example
