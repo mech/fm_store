@@ -33,6 +33,9 @@ module FmStore
           o << order
         end
         
+        @options[:sort_field] = s
+        @options[:sort_order] = o
+        
         self
       end
       
