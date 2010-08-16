@@ -15,17 +15,37 @@ module FmStore
       end
       
       # +ascend+ or +descend+
-      def order(field_and_order)
-        field, order = field_and_order.split(" ")
-        order = "asc" unless order
+      def order(field_and_orders)
+        if field_and_orders.kind_of? Array
+          sorts = field_and_orders.split(",").map(&:strip)
+          s = []
+          o = []
+          
+          sorts.each do |s|
+            field, order = s.split(" ")
+            order = "asc" unless order
+            
+            fm_name = klass.find_fm_name(field)
+            
+            order = "ascend" if order.downcase == "asc"
+            order = "descend" if order.downcase == "desc"
+            
+            s << fm_name
+            o << order
+          end
+        else
+          field, order = field_and_orders.split(" ")
+          order = "asc" unless order
+          
+          fm_name = klass.find_fm_name(field)
+          
+          order = "ascend" if order.downcase == "asc"
+          order = "descend" if order.downcase == "desc"
+          
+          @options[:sort_field] = fm_name
+          @options[:sort_order] = order
+        end
         
-        fm_name = klass.find_fm_name(field)
-        
-        order = "ascend" if order.downcase == "asc"
-        order = "descend" if order.downcase == "desc"
-        
-        @options[:sort_field] = fm_name
-        @options[:sort_order] = order
         self
       end
       
