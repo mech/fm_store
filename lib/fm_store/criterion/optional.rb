@@ -16,25 +16,12 @@ module FmStore
       
       # +ascend+ or +descend+
       def order(field_and_orders)
-        if field_and_orders.kind_of? Array
-          sorts = field_and_orders.split(",").map(&:strip)
-          s = []
-          o = []
-          
-          sorts.each do |s|
-            field, order = s.split(" ")
-            order = "asc" unless order
-            
-            fm_name = klass.find_fm_name(field)
-            
-            order = "ascend" if order.downcase == "asc"
-            order = "descend" if order.downcase == "desc"
-            
-            s << fm_name
-            o << order
-          end
-        else
-          field, order = field_and_orders.split(" ")
+        sorts = field_and_orders.split(",").map(&:strip)
+        s = []
+        o = []
+        
+        sorts.each do |s|
+          field, order = s.split(" ")
           order = "asc" unless order
           
           fm_name = klass.find_fm_name(field)
@@ -42,8 +29,8 @@ module FmStore
           order = "ascend" if order.downcase == "asc"
           order = "descend" if order.downcase == "desc"
           
-          @options[:sort_field] = fm_name
-          @options[:sort_order] = order
+          s << fm_name
+          o << order
         end
         
         self
