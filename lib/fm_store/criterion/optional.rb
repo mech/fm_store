@@ -17,8 +17,8 @@ module FmStore
       # +ascend+ or +descend+
       def order(field_and_orders)
         sorts = field_and_orders.split(",").map(&:strip)
-        s = []
-        o = []
+        sort_field = []
+        sort_order = []
         
         sorts.each do |s|
           field, order = s.split(" ")
@@ -29,12 +29,12 @@ module FmStore
           order = "ascend" if order.downcase == "asc"
           order = "descend" if order.downcase == "desc"
           
-          s << fm_name
-          o << order
+          sort_field << fm_name
+          sort_order << order
         end
         
-        @options[:sort_field] = s
-        @options[:sort_order] = o
+        @options[:sort_field] = sort_field
+        @options[:sort_order] = sort_order
         
         self
       end
