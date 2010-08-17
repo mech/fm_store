@@ -55,13 +55,21 @@ method has been called such as +each+, +first+, etc.
 
   # Find single job with ID. There is no #find method. Not to be confused with
   # the instance method Job#id like @job.id which return you "JDID1" for example.
+  # ID will default to +-recid+. If you wish to change that, use the +:identity+ option
+  class Job
+    include FmStore::Layout
+    
+    field :job_id, String, :fm_name => "jdid", :identity => true
+  end
+  
   @job = Job.id("JDID1")
 
   # Find 10 records
   @jobs = Job.limit(10)
 
-  # Find 10 records sorted
-  @jobs = Job.limit(10).order("status")
+  # Find 10 records sorted. By default is ASC
+  @jobs = Job.limit(10).order("status") # same as @jobs = Job.limit(10).order("status asc")
+  @jobs = Job.limit(10).order("status desc, jdid")
 
   # Find based on condition (single value per field). Please use the field name
   # rather than the FileMaker field name like "modify date"
@@ -73,11 +81,9 @@ method has been called such as +each+, +first+, etc.
 
   # Find all payroll details whose gross salary is between $1.00 to $10.00 in order
   PayrollDetail.where("gross_salary.bw" => "1...10").order("gross salary")
-  
-  # Sorting. By default is ASC
-  @jobs = Job.order("status") # same as Job.order("status asc")
-  
+
   # Excluding
+  # WARNING - exclude cannot chain to +search+ for now
   @jobs = Job.where("status.neq" => "open")
   @jobs = Job.exclude("status" => "open") # this is preferred
   
@@ -105,17 +111,45 @@ field option, this +search+ method will know which fields to search for.
   # Search for it in your controller
   @company = Company.search(params)
   
-  @company = Company.where(:category => "REGULAR").search(params)
+  @companies = Company.where(:category => "REGULAR").search(params)
+  @jobs = Job.in(:status => ["open", "pending"]).search(:q => "engineer, programmer")
+
++search+ will always look for params[:q] as the query keyword and params[:page] as the page number.
+
+WARNING - Please note that +exclude+ cannot use +search+ for now.
   
 == Pagination
 
 Paging is supported via WillPaginate rails3 branch. Any +limit+ criteria will be
-ignore when you call +paginate+.
+ignore when you call +paginate+, but you can override +:per_page+ as usual.
 
-  @jobs = Job.where("status" => "open").paginate(:page => params[:page])
+  @jobs = Job.where("status" => "open").paginate(:page => params[:page] || 1)
+  @jobs = Job.where("status" => "open").paginate(:per_page => 10, :page => params[:page] || 1)
 
 +paginate+ is a kicker method in itself so database connection will be made and
 result being retrieved.
+
+== Custom query
+
+If any of the +where+, +in+, +exclude+ do not meet your need, you can build the query yourself using FileMaker's +findquery+ command.
+
+For example:
+
+  JobApplication.custom_query(
+    "-query" => "(q0,q1);!(q2);!(q3);!(q4)",
+    "-q0" => "caid",
+    "-q0.value" => "123",
+    "-q1" => "status2",
+    "-q1.value" => "DeclineOffer",
+    "-q2" => "status1",
+    "-q2.value" => "Apply",
+    "-q3" => "status1",
+    "-q3.value" => "Select",
+    "-q4" => "status1",
+    "-q4.value" => "SMS"
+  ).order("date2 DESC")
+
+The query is +(q0,q1);!(q2);!(q3);!(q4)+ which means find +q0+ and +q1+ and omit +q2+, +q3+, and +q4+
   
 == Available operators
 
