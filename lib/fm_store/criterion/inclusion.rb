@@ -40,15 +40,16 @@ module FmStore
             query = params[:q]
 
             p = klass.searchable_fields.inject({}) { |h, name| h[name] = query; h }
-            where(p, false).paginate(:page => current_page)
+            where(p, false).paginate(:page => current_page) # Logical OR
           else
             where.paginate(:page => current_page)
           end
         else
-          # we have constraint
-          c = @params
+          # we have constraint, but it can be from +where+ or +in+
+          # current implementation only take into account +where+
           
           if params[:q].present?
+            c = find_query ? @raw_params : @params # we need to get the raw params here
             query = params[:q]
             
             p = klass.searchable_fields.inject({}) { |h, name| h[name] = query; h }
@@ -66,7 +67,11 @@ module FmStore
             update_params(final)
             paginate(:page => current_page)
           else
-            where(@params).paginate(:page => current_page)
+            if find_query
+              klass.in(@raw_params).paginate(:page => current_page)
+            else
+              where(@params).paginate(:page => current_page)
+            end
           end
         end
       end
@@ -81,6 +86,7 @@ module FmStore
       # Operator not allowed in -findquery query command, so do not write this
       # Job.in("status.eq" => ["closed", "pending"])
       def in(params = {})
+        @raw_params = params
         accepted_params = {}
         
         params.each do |field, value|
@@ -166,21 +172,22 @@ module FmStore
 
       # Build key-value definitions and query map  '-q1...'
       def build_key_values(qh)
-        key_values = {}
-        query_map = []
-        counter = 0
+        # @key_values = {}
+        # @query_map = []
+        # @counter = 0
+        
         qh.each_with_index do |ha,i|
           ha[1] = ha[1].to_a
           query_tag = []
           ha[1].each do |v|
-            key_values["-q#{counter}"] = ha[0]
-            key_values["-q#{counter}.value"] = v
-            query_tag << "q#{counter}"
-            counter += 1
+            @key_values["-q#{@counter}"] = ha[0]
+            @key_values["-q#{@counter}.value"] = v
+            query_tag << "q#{@counter}"
+            @counter += 1
           end
-          query_map << query_tag
+          @query_map << query_tag
         end
-        return key_values, query_map
+        return @key_values, @query_map
       end
 
       # Build query request logic for FMP requests  '-query...'

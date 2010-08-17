@@ -44,13 +44,19 @@ module FmStore
     include Criterion::Optional
     include Enumerable
     
-    attr_reader :klass, :params, :options
+    attr_reader :klass, :params, :options, :raw_params
     attr_accessor :find_query
     
     delegate :paginate, :to => :reader
     
     def initialize(klass, find_query = false)
       @params, @options, @klass, @find_query = {}, {}, klass, find_query
+      
+      if find_query
+        @key_values = {}
+        @query_map = []
+        @counter = 0
+      end
     end
     
     def reader
