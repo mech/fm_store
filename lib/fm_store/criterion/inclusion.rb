@@ -153,15 +153,21 @@ module FmStore
       end
       
       def constraint_array_mix(ary)
-        final = []
-
-        ary.last.each do |query|
-          tmp = ary.first.dup
-          tmp << query
-          final << tmp
-        end
+        # final = []
+        # 
+        # ary.last.each do |query|
+        #   tmp = ary.first.dup
+        #   tmp << query
+        #   final << tmp
+        # end
+        # 
+        # final
         
-        final
+        ary[0].to_a.each_with_index do |v,i|
+          constraint_array_mix(ary[1,ary.size], (line + [v]), rslt)
+          rslt << (line + [v]) if ary.size == 1
+        end
+        return rslt
       end
       
       # These methods are taken from http://pastie.org/914503
