@@ -86,7 +86,6 @@ module FmStore
       # Operator not allowed in -findquery query command, so do not write this
       # Job.in("status.eq" => ["closed", "pending"])
       def in(params = {})
-        @raw_params = params
         accepted_params = {}
         
         params.each do |field, value|
@@ -95,6 +94,8 @@ module FmStore
           fm_name = klass.find_fm_name(field)
           accepted_params[fm_name] = value if fm_name
         end
+        
+        @raw_params = accepted_params
         
         update_params(assemble_query(accepted_params))
         self
