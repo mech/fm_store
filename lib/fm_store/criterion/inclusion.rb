@@ -152,7 +152,7 @@ module FmStore
         return key_values, [c_map, q_map]
       end
       
-      def constraint_array_mix(ary)
+      def constraint_array_mix(ary, line=[], rslt=[])
         # final = []
         # 
         # ary.last.each do |query|
