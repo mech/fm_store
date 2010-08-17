@@ -68,7 +68,7 @@ module FmStore
             paginate(:page => current_page)
           else
             if find_query
-              klass.in(@raw_params).paginate(:page => current_page)
+              self.in(@raw_params).paginate(:page => current_page)
             else
               where(@params).paginate(:page => current_page)
             end
