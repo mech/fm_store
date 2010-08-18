@@ -77,7 +77,12 @@ module FmStore
       end
       
       def id(record_id)
-        update_params(klass.identity => record_id)
+        if klass.identity == "-recid"
+          update_params("-recid" => record_id)
+        else
+          update_params(klass.identity => "=#{record_id}")
+        end
+        
         self.first
       end
       
@@ -90,6 +95,9 @@ module FmStore
         
         params.each do |field, value|
           field = field.to_s
+          
+          # Convert to an Array if it is String
+          value = Array(value) if value.is_a?(String)
           
           fm_name = klass.find_fm_name(field)
           accepted_params[fm_name] = value if fm_name
@@ -112,7 +120,7 @@ module FmStore
       
       def assemble_constraint_query(constraint, query)
         key_values, query_map = build_constraint_key_values(constraint, query)
-        key_values.merge("-query" => query_translate(constraint_array_mix(query_map)))
+        key_values.merge("-query" => query_translate(array_mix(query_map)))
       end
       
       def build_constraint_key_values(c, q)
@@ -120,36 +128,57 @@ module FmStore
         c_map = []
         q_map = []
         counter = 0
-
-        c.each do |k, v|
-          # v may be string
-          if v.is_a?(String)
-            v = Array(v)
-          end
-          
-          v.each do |constraint|
-            key_values["-q#{counter}"] = k
-            key_values["-q#{counter}.value"] = constraint
-            c_map << "q#{counter}"
+        
+        # Process the constraint first
+        c.each_with_index do |ha,i|
+          ha[1] = ha[1].to_a
+          query_tag = []
+          ha[1].each do |v|
+            key_values["-q#{counter}"] = ha[0]
+            key_values["-q#{counter}.value"] = v
+            query_tag << "q#{counter}"
             counter += 1
           end
+          c_map << query_tag
         end
-
-        q.each do |k, v|
-          if v.is_a?(String)
-            v = v.split(/\s|,/).select(&:present?)
-          end
-          
-          v.each do |query|
-            key_values["-q#{counter}"] = k
-            key_values["-q#{counter}.value"] = query
-            q_map << "q#{counter}"
+        
+        # c.each do |k, v|
+        #   v = Array(v) if v.is_a?(String)
+        #   
+        #   v.each do |constraint|
+        #     key_values["-q#{counter}"] = k
+        #     key_values["-q#{counter}.value"] = constraint
+        #     c_map << "q#{counter}"
+        #     counter += 1
+        #   end
+        # end
+        
+        
+        # Then user's query
+        q.each_with_index do |ha,i|
+          ha[1] = ha[1].to_a
+          query_tag = []
+          ha[1].each do |v|
+            key_values["-q#{counter}"] = ha[0]
+            key_values["-q#{counter}.value"] = v
+            query_tag << "q#{counter}"
             counter += 1
           end
-          # take the c_map
+          q_map << query_tag
         end
-
-        return key_values, [c_map, q_map]
+        
+        # q.each do |k, v|
+        #   v = v.split(/\s|,/).select(&:present?) if v.is_a?(String)
+        #   
+        #   v.each do |query|
+        #     key_values["-q#{counter}"] = k
+        #     key_values["-q#{counter}.value"] = query
+        #     q_map << "q#{counter}"
+        #     counter += 1
+        #   end
+        # end
+        
+        return key_values, (c_map + q_map)
       end
       
       def constraint_array_mix(ary, line=[], rslt=[])
