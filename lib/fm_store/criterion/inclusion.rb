@@ -179,7 +179,7 @@ module FmStore
         #   end
         # end
         
-        return key_values, [c_map, q_map]
+        return key_values, (c_map + [q_map])
       end
       
       def constraint_array_mix(ary, line=[], rslt=[])
