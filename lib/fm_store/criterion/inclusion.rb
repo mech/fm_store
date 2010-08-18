@@ -156,7 +156,8 @@ module FmStore
         
         # Then user's query
         q.each_with_index do |ha,i|
-          ha[1] = ha[1].split(/\s|,/).select(&:present?) if ha[1].is_a?(String)
+          # ha[1] = ha[1].split(/\s|,/).select(&:present?) if ha[1].is_a?(String)
+          ha[1] = Array(ha[1]) if ha[1].is_a?(String)
           query_tag = []
           ha[1].each do |v|
             key_values["-q#{counter}"] = ha[0]
@@ -178,7 +179,7 @@ module FmStore
         #   end
         # end
         
-        return key_values, (c_map + q_map)
+        return key_values, [c_map, q_map]
       end
       
       def constraint_array_mix(ary, line=[], rslt=[])
