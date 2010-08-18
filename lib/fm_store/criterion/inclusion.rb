@@ -131,7 +131,7 @@ module FmStore
         
         # Process the constraint first
         c.each_with_index do |ha,i|
-          ha[1] = ha[1].to_a
+          ha[1] = Array(ha[1]) if ha[1].is_a?(String)
           query_tag = []
           ha[1].each do |v|
             key_values["-q#{counter}"] = ha[0]
@@ -156,7 +156,7 @@ module FmStore
         
         # Then user's query
         q.each_with_index do |ha,i|
-          ha[1] = ha[1].to_a
+          ha[1] = ha[1].split(/\s|,/).select(&:present?) if ha[1].is_a?(String)
           query_tag = []
           ha[1].each do |v|
             key_values["-q#{counter}"] = ha[0]
