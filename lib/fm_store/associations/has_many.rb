@@ -20,9 +20,17 @@ module FmStore
         # Returns a criteria rather then grabbing the records, so we do not
         # waste request trip
         if @format_with
-          @target = @klass.where({@reference_key => "=#{@layout.send(@format_with.to_sym)}"})
+          if @layout.send(@format_with.to_sym).nil?
+            @target = @klass.where
+          else
+            @target = @klass.where({@reference_key => "=#{@layout.send(@format_with.to_sym)}"})
+          end
         else
-          @target = @klass.where({@reference_key => "=#{@layout.send(@reference_key.to_sym)}"})
+          if @layout.send(@reference_key.to_sym).nil?
+            @target = @klass.where
+          else
+            @target = @klass.where({@reference_key => "=#{@layout.send(@reference_key.to_sym)}"})
+          end
         end
       end
       

@@ -47,6 +47,18 @@ This is using the Job example:
     end
   end
 
+== format_with option
+
+There will be times when FileMaker give us String or Numeric ID. For example, +caid+ can become +52383.0+.
+What we really want is a String like +"52383"+. You can force it by using the +format_with+ option and provide
+your own implementation of the ID.
+
+  has_many :employments, :reference_key => "candidate_id", :format_with => :formatted_candidate_id
+  
+  def formatted_candidate_id
+    candidate_id.to_s.split(".").first
+  end
+
 == Finders
 
 All finder methods such as +where+, +limit+, +order+, +in+ return a criteria object
