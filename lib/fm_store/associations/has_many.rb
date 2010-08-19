@@ -21,13 +21,13 @@ module FmStore
         # waste request trip
         if @format_with
           if @layout.send(@format_with.to_sym).nil?
-            @target = @klass.where
+            @target = nil
           else
             @target = @klass.where({@reference_key => "=#{@layout.send(@format_with.to_sym)}"})
           end
         else
           if @layout.send(@reference_key.to_sym).nil?
-            @target = @klass.where
+            @target = nil
           else
             @target = @klass.where({@reference_key => "=#{@layout.send(@reference_key.to_sym)}"})
           end
