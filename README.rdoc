@@ -190,5 +190,14 @@ which means find
 * lte   <= word
 * neq   omit,word
 
+== Persistence
 
+In order to save data to FileMaker, check you have the necessary permission.
 
+  @leave = Leave.new
+  @leave.contract_code = "S1234.01"
+  @leave.fm_attributes #=> {"contract code" => "S1234.01"}
+  @leave.from_date = Date.today
+  @leave.fm_attributes #=> {"from"=>"08/19/2010", "contract code" => "S1234.01"}
+  
+As you can see, the real work of converting Ruby object to the one suitable for FileMaker is the +fm_attributes+ value method.
