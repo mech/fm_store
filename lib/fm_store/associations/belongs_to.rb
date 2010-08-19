@@ -15,6 +15,7 @@ module FmStore
       protected
       
       def build_parent
+        return @target = nil if @layout.send(@reference_key.to_sym).nil?
         @target = @klass.where({@reference_key => "=#{@layout.send(@reference_key.to_sym)}"}).limit(1).first
       end
       
