@@ -49,8 +49,8 @@ This is using the Job example:
 
 == format_with option
 
-There will be times when FileMaker give us String or Numeric ID. For example, +caid+ can become +52383.0+.
-What we really want is a String like +"52383"+. You can force it by using the +format_with+ option and provide
+There will be times when FileMaker give us String or Numeric ID. For example, +caid+ can become "52383.0".
+What we really want is a String like "52383". You can force it by using the +format_with+ option and provide
 your own implementation of the ID.
 
   has_many :employments, :reference_key => "candidate_id", :format_with => :formatted_candidate_id
@@ -199,5 +199,9 @@ In order to save data to FileMaker, check you have the necessary permission.
   @leave.fm_attributes #=> {"contract code" => "S1234.01"}
   @leave.from_date = Date.today
   @leave.fm_attributes #=> {"from"=>"08/19/2010", "contract code" => "S1234.01"}
+  
+  @leave.valid?   # test if model is valid or not
+  @leave.errors   # get all the errors if there are any
+  @leave.save     # this will automatically called valid? and return false if failed
   
 As you can see, the real work of converting Ruby object to the one suitable for FileMaker is the +fm_attributes+ value method.
