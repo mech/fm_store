@@ -8,6 +8,7 @@ module FmStore
       def initialize(layout, options)
         @layout, @association_name = layout, options.name
         @klass, @reference_key, @options = options.klass, options.reference_key, options
+        @format_with = options.format_with
         
         build_parent
       end
@@ -15,8 +16,19 @@ module FmStore
       protected
       
       def build_parent
-        return @target = nil if @layout.send(@reference_key.to_sym).nil?
-        @target = @klass.where({@reference_key => "=#{@layout.send(@reference_key.to_sym)}"}).limit(1).first
+        if @format_with
+          if @layout.send(@format_with.to_sym).nil?
+            @target = nil
+          else
+            @target = @klass.where({@reference_key => "=#{@layout.send(@format_with.to_sym)}"}).limit(1).first
+          end
+        else
+          if @layout.send(@reference_key.to_sym).nil?
+            @target = nil
+          else
+            @target = @klass.where({@reference_key => "=#{@layout.send(@reference_key.to_sym)}"}).limit(1).first
+          end
+        end
       end
       
     end
