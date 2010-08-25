@@ -75,8 +75,6 @@ module FmStore
         case ivar
         when Date
           ivar = ivar.strftime("%m/%d/%Y")
-        when Fixnum
-          ivar = BigDecimal.new(ivar.to_s)
         when DateTime
           ivar = ivar.strftime("%m/%d/%Y %H:%M:%S")
         end
