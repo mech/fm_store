@@ -22,7 +22,7 @@ module FmStore
         attributes.each do |field, value|
           field = field.to_s
           
-          fm_name = klass.find_fm_name(field)
+          fm_name = self.class.find_fm_name(field)
           
           if fm_name
             attrs[fm_name] = value
