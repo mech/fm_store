@@ -72,14 +72,24 @@ module FmStore
       fields.each do |fm_attr, field|
         ivar = send("#{field.name}")
         
-        case ivar
-        when Date
+        type = field.type
+        
+        if type == Date
           ivar = ivar.strftime("%m/%d/%Y")
-        when DateTime
+        elsif type == DateTime
           ivar = ivar.strftime("%m/%d/%Y %H:%M:%S")
-        when Time
+        elsif type == Time
           ivar = ivar.strftime("%H:%M")
         end
+        
+        # case ivar
+        # when Date
+        #   ivar = ivar.strftime("%m/%d/%Y")
+        # when DateTime
+        #   ivar = ivar.strftime("%m/%d/%Y %H:%M:%S")
+        # when Time
+        #   ivar = ivar.strftime("%H:%M")
+        # end
         
         attrs[fm_attr] = ivar if ivar # ignore nil attributes
       end
