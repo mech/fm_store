@@ -75,11 +75,11 @@ module FmStore
         type = field.type
         
         if type == Date
-          ivar = ivar.strftime("%m/%d/%Y")
+          ivar = ivar.strftime("%m/%d/%Y") if ivar
         elsif type == DateTime
-          ivar = ivar.strftime("%m/%d/%Y %H:%M:%S")
+          ivar = ivar.strftime("%m/%d/%Y %H:%M:%S") if ivar
         elsif type == Time
-          ivar = ivar.strftime("%H:%M")
+          ivar = ivar.strftime("%H:%M") if ivar
         end
         
         # case ivar
