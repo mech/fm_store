@@ -77,6 +77,8 @@ module FmStore
           ivar = ivar.strftime("%m/%d/%Y")
         when DateTime
           ivar = ivar.strftime("%m/%d/%Y %H:%M:%S")
+        when Time
+          ivar = ivar.strftime("%H:%M")
         end
         
         attrs[fm_attr] = ivar if ivar # ignore nil attributes

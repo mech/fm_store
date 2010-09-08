@@ -17,9 +17,16 @@ module FmStore
     
     def update_attributes(attributes = {})
       if valid?
+        attrs = {}
+
+        self.fields.each do |fm_attr, field|
+          ivar = send("#{field.name}")
+          attrs[fm_attr] = ivar if ivar # ignore nil attributes
+        end
+        
         run_callbacks(:save) do
           conn = Connection.establish_connection(self.class)
-          result = conn.edit(@record_id, attributes)
+          result = conn.edit(@record_id, attrs)
         end; self
       else
         false
