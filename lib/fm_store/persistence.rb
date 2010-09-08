@@ -18,10 +18,15 @@ module FmStore
     def update_attributes(attributes = {})
       if valid?
         attrs = {}
-
-        self.fields.each do |fm_attr, field|
-          ivar = send("#{field.name}")
-          attrs[fm_attr] = ivar if ivar # ignore nil attributes
+        
+        attributes.each do |field, value|
+          field = field.to_s
+          
+          fm_name = klass.find_fm_name(field)
+          
+          if fm_name
+            attrs[fm_name] = value
+          end
         end
         
         run_callbacks(:save) do
