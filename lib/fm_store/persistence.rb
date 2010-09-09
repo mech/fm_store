@@ -23,8 +23,17 @@ module FmStore
           field = field.to_s
           
           fm_name = self.class.find_fm_name(field)
+          type = self.class.find_fm_type(field)
           
           if fm_name
+            if type == Date
+              value = value.strftime("%m/%d/%Y") if value
+            elsif type == DateTime
+              value = value.strftime("%m/%d/%Y %H:%M:%S") if value
+            elsif type == Time
+              value = value.strftime("%H:%M") if value
+            end
+            
             attrs[fm_name] = value
           end
         end

@@ -40,6 +40,12 @@ module FmStore
         end
       end
       
+      def find_fm_type(attribute_name)
+        f = fields.find { |a| a.last.name == attribute_name }
+        
+        f.last.type if f
+      end
+      
       def searchable_fields
         fields.map(&:last).select(&:searchable).map(&:name)
       end
