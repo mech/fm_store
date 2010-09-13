@@ -77,6 +77,8 @@ module FmStore
       end
       
       def id(record_id)
+        return nil if record_id.blank?
+        
         if klass.identity == "-recid"
           update_params("-recid" => record_id)
         else
