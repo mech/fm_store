@@ -85,7 +85,13 @@ module FmStore
           update_params(klass.identity => "=#{record_id}")
         end
         
-        self.first
+        self.limit(1).first
+      end
+      
+      def fm_id(record_id)
+        update_params("-recid" => record_id)
+        
+        self.limit(1).first
       end
       
       # -query

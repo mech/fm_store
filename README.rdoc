@@ -75,6 +75,10 @@ method has been called such as +each+, +first+, etc.
   end
   
   @job = Job.id("JDID1") #=> You do not need to append "=" sign to it, like "=JDID1"
+  
+  You still can get the original internal FileMaker id by:
+  
+  @job = Job.fm_id("18") # Using the -recid
 
   # Find 10 records
   @jobs = Job.limit(10)
