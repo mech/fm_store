@@ -3,7 +3,7 @@ module FmStore
   module Finders
     
     # Criteria
-    [:where, :limit, :skip, :order, :exclude, :search, :id].each do |name|
+    [:where, :limit, :skip, :order, :exclude, :search, :id, :fm_id].each do |name|
       define_method(name) do |*args|
         criteria.send(name, *args)
       end
