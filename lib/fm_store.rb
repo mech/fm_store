@@ -13,6 +13,7 @@ require 'rfm/metadata/field'
 require 'fm_store/ext/field'
 require 'active_support'
 require 'active_support/core_ext'
+require 'active_support/notifications'
 require 'active_model'
 require 'will_paginate/collection'
 
