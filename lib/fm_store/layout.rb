@@ -73,7 +73,7 @@ module FmStore
     end
 
     def fm_attributes
-      @attributes = {}
+      attrs = {}
 
       fields.each do |fm_attr, field|
         ivar = send("#{field.name}")
@@ -97,14 +97,21 @@ module FmStore
         #   ivar = ivar.strftime("%H:%M")
         # end
 
-        @attributes[fm_attr] = ivar if ivar # ignore nil attributes
+        attrs[fm_attr] = ivar if ivar # ignore nil attributes
       end
 
-      @attributes
+      attrs
     end
 
     def attributes
-      @attributes
+      @attributes = {}
+
+      fields.each do |fm_attr, field|
+        ivar = send("#{field.name}")
+        @attributes[field.name] = ivar
+      end
+
+      return @attributes
     end
 
     def reload
