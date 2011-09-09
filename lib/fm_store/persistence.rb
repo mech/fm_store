@@ -53,7 +53,9 @@ module FmStore
         run_callbacks(:save) do
           conn = Connection.establish_connection(self.class)
           result = conn.edit(@record_id, attrs)
-        end; self
+
+          return FmStore::Builders::Single.build(result, self.class)
+        end
       else
         false
       end
