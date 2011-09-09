@@ -55,7 +55,7 @@ module FmStore
           result = conn.edit(@record_id, attrs)
 
           return FmStore::Builders::Single.build(result, self.class)
-        end
+        end;self # just in case
       else
         false
       end
