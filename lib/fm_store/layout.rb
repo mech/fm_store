@@ -5,6 +5,7 @@ module FmStore
 
     included do
       include FmStore::Components
+      self.include_root_in_json = false
 
       cattr_accessor :layout, :database
 
