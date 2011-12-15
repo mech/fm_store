@@ -4,7 +4,7 @@ module FmStore
     extend ActiveSupport::Concern
     
     included do
-      class_inheritable_accessor :fields
+      class_attribute :fields
       
       self.fields = {}
     end
