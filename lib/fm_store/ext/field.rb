@@ -1,8 +1,9 @@
 module Rfm
   module Metadata
     class Field
+      # Remove dollar sign also
       def remove_decimal_mark(value)
-        value.delete(',')
+        value.delete('$,')
       end
 
       def coerce(value, resultset)
@@ -13,11 +14,17 @@ module Rfm
         when "date"      then Date.strptime(value, resultset.date_format)
         when "time"      then DateTime.strptime("1/1/-4712 #{value}", "%m/%d/%Y #{resultset.time_format}")
         when "timestamp" then DateTime.strptime(value, resultset.timestamp_format)
-        when "container" then URI.parse("#{resultset.server.uri.scheme}://#{resultset.server.uri.host}:#{resultset.server.uri.port}#{value}")
-        else nil
+        when "container" then
+          if value.start_with?('http')
+            value
+          else
+            URI.parse("#{resultset.server.scheme}://#{resultset.server.host_name}:#{resultset.server.port}#{value}")
+          end
+        else value
         end
-      rescue
-        nil
+      rescue => e
+        p e
+        value
       end
     end
   end
