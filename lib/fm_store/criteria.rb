@@ -2,11 +2,11 @@
 require 'fm_store/criterion/inclusion'
 require 'fm_store/criterion/exclusion'
 require 'fm_store/criterion/optional'
-require 'fm_store/paging'
+require 'fm_store/pagination'
 
 module FmStore
   class FmReader
-    include Paging
+    include Pagination
 
     attr_reader :criteria
 
@@ -75,7 +75,7 @@ module FmStore
 
     def total
       original_max_record = options[:max_records]
-      count = paginate(:per_page => 1).total_entries
+      count = paginate(:per_page => 1).total_count
       limit(original_max_record)
 
       return count

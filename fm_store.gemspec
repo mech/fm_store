@@ -1,26 +1,25 @@
-# -*- encoding: utf-8 -*-
-lib = File.expand_path('../lib/', __FILE__)
-$:.unshift lib unless $:.include?(lib)
-
+# coding: utf-8
+lib = File.expand_path('../lib', __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require "fm_store/version"
 
-Gem::Specification.new do |s|
-  s.name        = "fm_store"
-  s.version     = FmStore::VERSION
-  s.platform    = Gem::Platform::RUBY
-  s.authors     = ["Swee Me Chai"]
-  s.email       = ["mech@me.com"]
-  s.homepage    = "https://github.com/mech/fm_store"
-  s.summary     = "ActiveRecord-like access for FileMaker r/w."
-  s.description = "FmStore allow ActiveRecord-like read/write access to a FileMaker database."
+Gem::Specification.new do |spec|
+  spec.name          = 'fm_store'
+  spec.version       = FmStore::VERSION
+  spec.authors       = ['mech']
+  spec.email         = ['mech@me.com']
+  spec.summary       = 'ActiveRecord-like access for FileMaker r/w.'
+  spec.description   = 'FmStore allow ActiveRecord-like read/write access to a FileMaker database.'
+  spec.homepage      = 'https://github.com/mech/fm_store'
+  spec.license       = 'MIT'
 
-  s.required_rubygems_version = ">= 1.8.12"
-  s.rubyforge_project         = "fm_store"
+  spec.files         = `git ls-files -z`.split("\x0")
+  spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
+  spec.require_paths = ['lib']
 
-  # s.add_runtime_dependency("activemodel", ["~>3.0.3"])
-  s.add_runtime_dependency("activemodel", [">=3.1.3"])
-  s.add_runtime_dependency("will_paginate", ["~>3.0.2"])
+  spec.add_runtime_dependency 'activemodel'
+  spec.add_runtime_dependency 'lardawge-rfm'
 
-  s.files        = Dir.glob("lib/**/*") + %w(LICENSE README.rdoc)
-  s.require_path = 'lib'
+  spec.add_development_dependency 'bundler', '~> 1.16'
+  spec.add_development_dependency 'rake', '~> 12.0'
 end

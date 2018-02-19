@@ -3,8 +3,7 @@
 #
 require 'rubygems'
 
-gem "activemodel", ">=3.0.3"
-gem "will_paginate", "~>3.0.pre"
+gem "activemodel"
 
 require "singleton"
 require 'yaml'
@@ -15,7 +14,6 @@ require 'active_support'
 require 'active_support/core_ext'
 require 'active_support/notifications'
 require 'active_model'
-require 'will_paginate/collection'
 
 require 'fm_store/config'
 require 'fm_store/associations'

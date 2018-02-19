@@ -18,12 +18,13 @@ module Rfm
           if value.start_with?('http')
             value
           else
-            URI.parse("#{resultset.server.scheme}://#{resultset.server.host_name}:#{resultset.server.port}#{value}")
+            URI.parse("#{resultset.server.uri.scheme}://#{resultset.server.uri.host}:#{resultset.server.uri.port}#{value}")
           end
         else value
         end
-      rescue => e
-        p e
+      rescue StandardError => e
+        puts e.message
+        warn "Could not coerce '#{name}' with value = '#{value}'. Returning original value..."
         value
       end
     end
