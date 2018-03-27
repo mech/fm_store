@@ -11,6 +11,7 @@ module FmStore
       end
       
       def klass
+        return class_name if class_name.is_a?(Class)
         class_name.constantize
       end
       
