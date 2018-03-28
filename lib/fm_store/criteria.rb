@@ -23,7 +23,9 @@ module FmStore
     # This is the method to really get down and grab the records
     # The criteria find_query flag will be set to true if it is a -findquery
     def execute(paginating = false)
-      ActiveSupport::Notifications.instrument(:fm_store_execute, :model_name => klass.to_s, :params => params, :options => options) do
+      lines = caller
+
+      ActiveSupport::Notifications.instrument(:fm_store_execute, :model_name => klass.to_s, :params => params, :options => options, :lines => lines) do
         conn = Connection.establish_connection(klass)
 
         if find_query
