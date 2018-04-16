@@ -138,7 +138,7 @@ module FmStore
     end
 
     def to_key
-      id if id
+      persisted? ? [id] : nil
     end
 
     def persisted?
