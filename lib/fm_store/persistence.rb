@@ -16,15 +16,17 @@ module FmStore
     end
 
     def update_attributes(attributes = {})
+      assign_attributes(attributes)
+
       if valid?
         attrs = {}
 
         attributes.each do |field, value|
           field = field.to_s
-
+  
           fm_name = self.class.find_fm_name(field)
           type = self.class.find_fm_type(field)
-
+  
           if fm_name
             if type == Date
               if value.blank?
@@ -45,7 +47,7 @@ module FmStore
                 value = value.strftime("%H:%M")
               end
             end
-
+  
             attrs[fm_name] = value
           end
         end
@@ -102,6 +104,16 @@ module FmStore
         end; self
       else
         false
+      end
+    end
+
+    def assign_attributes(new_attributes)
+      return if new_attributes.blank?
+
+      new_attributes.each_pair do |key, value|
+        next unless respond_to?("#{key}=")
+
+        public_send("#{key}=", (value || ''))
       end
     end
 
