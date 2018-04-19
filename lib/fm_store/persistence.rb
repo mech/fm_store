@@ -32,13 +32,20 @@ module FmStore
               if value.blank?
                 value = '' # clear the date
               else
-                value = value.strftime("%m/%d/%Y")
+                if value.is_a? Data
+                  value = value.strftime("%m/%d/%Y")
+                else
+                  # Convert to Date as best we can
+                  value = Date.parse(value.to_s).strftime("%m/%d/%Y")
+                end
               end
             elsif type == DateTime
               if value.blank?
                 value = ''
-              else
+              elsif value.is_a? DateTime
                 value = value.strftime("%m/%d/%Y %H:%M:%S")
+              else
+                value = DateTime.parse(value.to_s).strftime("%m/%d/%Y %H:%M:%S")
               end
             elsif type == Time
               if value.blank?
