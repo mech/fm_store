@@ -9,6 +9,7 @@ module FmStore
       include FmStore::Persistence
       include ActiveModel::Validations
       include ActiveModel::Serializers::JSON
+      extend FmStore::Batches
 
       extend ActiveModel::Callbacks
       extend ActiveModel::Naming
