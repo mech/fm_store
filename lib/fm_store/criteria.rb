@@ -77,8 +77,13 @@ module FmStore
 
     def total
       original_max_record = options[:max_records]
-      count = paginate(:per_page => 1).total_count
-      limit(original_max_record) unless original_max_record.nil?
+      count = paginate(per_page: 1).total_count
+
+      if original_max_record.nil?
+        options.delete(:max_records)
+      else
+        limit(original_max_record)
+      end
 
       count
     end
