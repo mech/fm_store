@@ -23,7 +23,7 @@ module Rfm
         else value
         end
       rescue StandardError => e
-        puts e.message
+        warn e.message
         warn "Could not coerce '#{name}' with value = '#{value}'. Returning original value..."
         value
       end
