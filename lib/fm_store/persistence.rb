@@ -4,18 +4,13 @@ module FmStore
     extend ActiveSupport::Concern
 
     # The place where all the persistence took place, like insert, update
-    module ClassMethods
-      def create(attributes = {})
-
-      end
-    end
 
     # Instance methods
     def save
       create_or_update
     end
 
-    def update_attributes(attributes = {})
+    def update(attributes = {})
       assign_attributes(attributes)
 
       if valid?
@@ -23,10 +18,10 @@ module FmStore
 
         attributes.each do |field, value|
           field = field.to_s
-  
+
           fm_name = self.class.find_fm_name(field)
           type = self.class.find_fm_type(field)
-  
+
           if fm_name
             if type == Date
               if value.blank?
@@ -54,7 +49,7 @@ module FmStore
                 value = value.strftime("%H:%M")
               end
             end
-  
+
             attrs[fm_name] = value
           end
         end
@@ -70,6 +65,8 @@ module FmStore
       end
     end
 
+    alias update_attributes update
+
     # Throws Rfm::Error::RecordAccessDeniedError if no permission to delete
     def destroy
       run_callbacks(:destroy) do
@@ -80,16 +77,16 @@ module FmStore
       end
     end
 
-    alias :delete :destroy
+    alias delete destroy
 
     protected
 
     # Will always return +self+
     def create_or_update
-      result = new_record? ? create : update
+      new_record? ? fm_create : fm_update
     end
 
-    def create
+    def fm_create
       if valid?
         run_callbacks(:save) do
           conn = Connection.establish_connection(self.class)
@@ -103,12 +100,14 @@ module FmStore
       end
     end
 
-    def update
+    def fm_update
       if valid?
         run_callbacks(:save) do
           conn = Connection.establish_connection(self.class)
-          result = conn.edit(@record_id, self.fm_attributes)
-        end; self
+          conn.edit(@record_id, self.fm_attributes)
+        end
+
+        self
       else
         false
       end
@@ -123,6 +122,5 @@ module FmStore
         public_send("#{key}=", (value || ''))
       end
     end
-
   end
 end
