@@ -13,6 +13,12 @@ module FmStore #:nodoc
         @target == nil
       end
 
+      # Create will not return the proxy if target was NilClass
+      def self.init(type, options)
+        new_instance = new(type, options)
+        new_instance.target.nil? ? nil : new_instance
+      end
+
       def method_missing(name, *args, &block)
         @target.send(name, *args, &block)
       end
